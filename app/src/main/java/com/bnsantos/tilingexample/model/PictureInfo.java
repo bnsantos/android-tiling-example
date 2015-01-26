@@ -1,4 +1,4 @@
-package com.bnsantos.tilingexample;
+package com.bnsantos.tilingexample.model;
 
 /**
  * Created by bruno on 26/01/15.

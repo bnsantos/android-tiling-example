@@ -89,6 +89,7 @@
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-0.23.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="tileviewlib-1.0.13" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
   </component>
 </module>

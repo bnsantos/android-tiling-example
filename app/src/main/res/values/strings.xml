@@ -4,11 +4,22 @@
     <string name="app_name">TilingExample</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="choose_file">Choose file</string>
+    <string name="error_files">Error retrieving files</string>
+    <string name="choose_page">Choose page</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+
+
     <string name="hint_pdf_id">Add pdf id</string>
     <string name="hint_page">Select page</string>
     <string name="start">Start</string>
     <string name="title_activity_tile">TileActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="pdf_example">1422042559563</string>
 
 </resources>
