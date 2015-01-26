@@ -4,5 +4,11 @@
     <string name="app_name">TilingExample</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="hint_pdf_id">Add pdf id</string>
+    <string name="hint_page">Select page</string>
+    <string name="start">Start</string>
+    <string name="title_activity_tile">TileActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>
