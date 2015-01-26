@@ -3,3 +3,5 @@ Android tiling example using [TileView](https://github.com/moagrius/TileView) an
 
 ### Using
 [Retrofit](http://square.github.io/retrofit/)
+[JavaRx](https://github.com/ReactiveX/RxJava)
+[RxAndroid](https://github.com/ReactiveX/RxAndroid)
