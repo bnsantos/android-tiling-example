@@ -10,6 +10,8 @@
     <string name="choose_page">Choose page</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
+    <string name="error_picture">Error retrieving picture info</string>
+    <string name="error_unknown">Something weird happened. Please try again</string>
 
 
     <string name="hint_pdf_id">Add pdf id</string>
