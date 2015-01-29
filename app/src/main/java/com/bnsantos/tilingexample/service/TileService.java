@@ -21,7 +21,7 @@ public interface TileService {
     @GET("/files/{id}/{page}")
     public Response retrieveTile(@Path("id") String id,
                                @Path("page") int page,
-                               @Query("zoom") int zoom,
+                               @Query("zoom") float zoom,
                                @Query("row") int row,
                                @Query("col") int col);
 

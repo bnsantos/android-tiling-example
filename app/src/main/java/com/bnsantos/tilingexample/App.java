@@ -10,7 +10,7 @@ import retrofit.RestAdapter;
  * Created by bruno on 26/01/15.
  */
 public class App extends Application {
-    private static final String END_POINT = "http://10.1.0.220:3000";
+    private static final String END_POINT = "http://54.85.216.195:3000";
 
     private TileService mService;
 

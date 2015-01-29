@@ -1,29 +1,23 @@
 package com.bnsantos.tilingexample.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bnsantos.tilingexample.App;
 import com.bnsantos.tilingexample.R;
+import com.bnsantos.tilingexample.fragment.TileFragment;
 import com.bnsantos.tilingexample.model.PictureInfo;
-import com.qozix.tileview.TileView;
-import com.qozix.tileview.graphics.BitmapDecoder;
-import com.qozix.tileview.markers.MarkerEventListener;
 
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
+import java.lang.ref.WeakReference;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -43,44 +37,24 @@ public class TileActivity extends ActionBarActivity {
 
     private String mPdf;
     private int mPage;
-    private TileView mTileView;
+    private Button mAddPin;
+    private ProgressBar mProgressBar;
+    private WeakReference<TileFragment> mTileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tile);
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.tileActivityLayout);
-        initTileView();
-        relativeLayout.addView(mTileView);
+
         extractData(getIntent());
         retrievePictureInfo();
 
-        findViewById(R.id.addPinButton).setOnClickListener(new View.OnClickListener() {
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mAddPin = (Button) findViewById(R.id.addPinButton);
+        mAddPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addPin();
-            }
-        });
-    }
-
-    private void initTileView(){
-        mTileView = new TileView(this);
-        mTileView.setDecoder(new BitmapDecoder() {
-            @Override
-            public Bitmap decode(String s, Context context) {
-                String[] split = s.split(":");
-                Response r = App.getService().retrieveTile(mPdf, mPage, Integer.parseInt(split[0]), Integer.parseInt(split[2]), Integer.parseInt(split[1]));
-                byte[] bitmap = ((TypedByteArray) r.getBody()).getBytes();
-                return BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
-            }
-        });
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mTileView.setLayoutParams(params);
-
-        mTileView.addMarkerEventListener(new MarkerEventListener() {
-            @Override
-            public void onMarkerTap(View view, int x, int y) {
-                Toast.makeText( getApplicationContext(), "You tapped a pin", Toast.LENGTH_LONG ).show();
             }
         });
     }
@@ -103,10 +77,7 @@ public class TileActivity extends ActionBarActivity {
                 .subscribe(new Action1<PictureInfo>() {
                     @Override
                     public void call(PictureInfo pictureInfo) {
-                        mTileView.setSize(pictureInfo.width, pictureInfo.height);
-                        mTileView.addDetailLevel(1.000f, "100:%col%:%row%");
-                        mTileView.addDetailLevel(0.750f, "75:%col%:%row%");
-                        mTileView.addDetailLevel(0.500f, "50:%col%:%row%");
+                        initFragment(pictureInfo.width, pictureInfo.height);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -117,36 +88,31 @@ public class TileActivity extends ActionBarActivity {
                 });
     }
 
+    private void initFragment(int width, int height){
+        mTileFragment = new WeakReference<>(TileFragment.newInstance(mPdf, mPage, width, height));
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.tileFrame, mTileFragment.get(), "TILE_FRAGMENT")
+                .commit();
+        mProgressBar.setVisibility(View.GONE);
+        mAddPin.setVisibility(View.VISIBLE);
+    }
+
     private void addPin(){
-        addPin(0, 0);
+        //Center coordinate of the tile view
+        /*int width = mTileView.getWidth()/2;
+        int height = mTileView.getHeight()/2;
+        //Add displacement
+        addPin(width, height);
+
+
+        //Center of the picture
+        addPin(1500, 1159);*/
     }
 
     private void addPin( double x, double y ) {
         ImageView imageView = new ImageView( this );
-        imageView.setImageResource( R.drawable.maps_marker_blue );
-        mTileView.addMarker(imageView, x, y);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(mTileView!=null) {
-            mTileView.clear();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mTileView.destroy();
-        mTileView = null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mTileView!=null){
-            mTileView.resume();
-        }
+        imageView.setImageResource( R.drawable.push_pin );
+        //mTileView.addMarker(imageView, x, y);
     }
 }
