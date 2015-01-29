@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.bnsantos.tilingexample.MyBitmapDecoder;
 import com.qozix.tileview.TileView;
-import com.qozix.tileview.graphics.BitmapDecoderHttp;
 import com.qozix.tileview.markers.MarkerEventListener;
 
 /**
@@ -49,7 +48,7 @@ public class TileFragment extends Fragment{
         mTileView.addDetailLevel(0.125f, "12.5:%col%:%row%");
 
         /*mTileView.setDecoder(new BitmapDecoderHttp());
-        String endpoint = "http://54.85.216.195:3000/files/";
+        String endpoint = App.END_POINT + "/files/";
         mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=12.5&col=%col%&row=%row%");
         mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=25&col=%col%&row=%row%");
         mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=50&col=%col%&row=%row%");

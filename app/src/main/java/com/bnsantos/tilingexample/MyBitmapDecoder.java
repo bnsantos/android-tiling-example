@@ -44,6 +44,6 @@ public class MyBitmapDecoder implements BitmapDecoder {
     }
 
     private String url(String zoom, String row, String col){
-        return "http://54.85.216.195:3000/files/" + mPdf + "/" + mPage + "?zoom="+zoom+"&col="+col+"&row="+row;
+        return App.END_POINT + "/files/" + mPdf + "/" + mPage + "?zoom="+zoom+"&col="+col+"&row="+row;
     }
 }
