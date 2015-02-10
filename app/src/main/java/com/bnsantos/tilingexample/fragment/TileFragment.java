@@ -10,19 +10,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bnsantos.tilingexample.MyBitmapDecoder;
+import com.bnsantos.tilingexample.MyDragListener;
+import com.bnsantos.tilingexample.MyOnLongClickListener;
+import com.bnsantos.tilingexample.MyTileView;
 import com.bnsantos.tilingexample.R;
 import com.qozix.tileview.TileView;
 import com.qozix.tileview.markers.MarkerEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by bruno on 29/01/15.
  */
 public class TileFragment extends Fragment{
     private static final String TAG = TileFragment.class.getSimpleName();
-    private TileView mTileView;
+    private MyTileView mTileView;
     private String mPdf;
     private int mPage;
     private int mWidth;
@@ -46,7 +46,7 @@ public class TileFragment extends Fragment{
     }
 
     private void initTileView(){
-        mTileView = new TileView(getActivity());
+        mTileView = new MyTileView(getActivity());
         mTileView.setSize(mWidth, mHeight);
 
         mTileView.setDecoder(new MyBitmapDecoder(mPdf, mPage));
@@ -73,6 +73,7 @@ public class TileFragment extends Fragment{
                 Toast.makeText(getActivity(), "You tapped a pin ["+x+","+y+"]", Toast.LENGTH_LONG).show();
                 if(mRemovePin){
                     mTileView.removeMarker(view);
+                    mRemovePin = false;
                 }
             }
         });
@@ -101,7 +102,7 @@ public class TileFragment extends Fragment{
             @Override
             public void onTap(int w, int h) {
                 if(mAddPin){
-                    addPin(w/mTileView.getScale(), h/mTileView.getScale());
+                    addPin(w / mTileView.getScale(), h / mTileView.getScale());
                 }
                 Log.i(TAG, "Tap ["+w+","+h+"]");
             }
@@ -204,9 +205,11 @@ public class TileFragment extends Fragment{
 
     private void addPin( double x, double y ) {
         ImageView imageView = new ImageView(getActivity());
-        String key = "pin_"+x+"_"+y;
+        String key = x+":"+y;
         imageView.setTag(key);
         imageView.setImageResource(R.drawable.push_pin);
+        imageView.setOnLongClickListener(new MyOnLongClickListener());
+        mTileView.setOnDragListener(new MyDragListener(mTileView));
         mTileView.addMarker(imageView, x, y);
         mAddPin = false;
     }

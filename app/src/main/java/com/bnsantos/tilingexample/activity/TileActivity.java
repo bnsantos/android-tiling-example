@@ -46,6 +46,7 @@ public class TileActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tile);
+        setTheme(R.style.FullscreenTheme);
 
         extractData(getIntent());
         retrievePictureInfo();
