@@ -1,5 +1,6 @@
 package com.bnsantos.tilingexample.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,20 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bnsantos.tilingexample.MyBitmapDecoder;
-import com.bnsantos.tilingexample.MyDragListener;
-import com.bnsantos.tilingexample.MyOnLongClickListener;
-import com.bnsantos.tilingexample.MyTileView;
 import com.bnsantos.tilingexample.R;
+import com.bnsantos.tilingexample.activity.TileActivity;
+import com.bnsantos.tilingexample.utils.MyBitmapDecoder;
+import com.bnsantos.tilingexample.utils.MyDragListener;
+import com.bnsantos.tilingexample.utils.MyOnLongClickListener;
 import com.qozix.tileview.TileView;
-import com.qozix.tileview.markers.MarkerEventListener;
 
 /**
  * Created by bruno on 29/01/15.
  */
 public class TileFragment extends Fragment{
     private static final String TAG = TileFragment.class.getSimpleName();
-    private MyTileView mTileView;
+    private TileActivity mListener;
+    private TileView mTileView;
     private String mPdf;
     private int mPage;
     private int mWidth;
@@ -46,7 +47,7 @@ public class TileFragment extends Fragment{
     }
 
     private void initTileView(){
-        mTileView = new MyTileView(getActivity());
+        mTileView = new TileView(getActivity());
         mTileView.setSize(mWidth, mHeight);
 
         mTileView.setDecoder(new MyBitmapDecoder(mPdf, mPage));
@@ -66,17 +67,6 @@ public class TileFragment extends Fragment{
 
         // center markers along both axes
         mTileView.setMarkerAnchorPoints( -0.5f, -0.5f );
-
-        mTileView.addMarkerEventListener(new MarkerEventListener() {
-            @Override
-            public void onMarkerTap(View view, int x, int y) {
-                Toast.makeText(getActivity(), "You tapped a pin ["+x+","+y+"]", Toast.LENGTH_LONG).show();
-                if(mRemovePin){
-                    mTileView.removeMarker(view);
-                    mRemovePin = false;
-                }
-            }
-        });
 
         mTileView.addTileViewEventListener(new TileView.TileViewEventListener() {
             @Override
@@ -208,9 +198,25 @@ public class TileFragment extends Fragment{
         String key = x+":"+y;
         imageView.setTag(key);
         imageView.setImageResource(R.drawable.push_pin);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "You tapped a pin ["+v.getTag()+"]", Toast.LENGTH_LONG).show();
+                if(mRemovePin){
+                    mTileView.removeMarker(v);
+                    mRemovePin = false;
+                }
+            }
+        });
         imageView.setOnLongClickListener(new MyOnLongClickListener());
-        mTileView.setOnDragListener(new MyDragListener(mTileView));
+        mTileView.setOnDragListener(new MyDragListener(mTileView, mListener.getPictureWidth(), mListener.getPictureHeight(), getResources().getDimensionPixelSize(R.dimen.toolbar_height)));
         mTileView.addMarker(imageView, x, y);
         mAddPin = false;
+    }
+
+    @Override
+    public void onAttach (Activity activity){
+        super.onAttach(activity);
+        mListener = (TileActivity) activity;
     }
 }

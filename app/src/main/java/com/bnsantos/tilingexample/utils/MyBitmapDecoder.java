@@ -1,10 +1,12 @@
-package com.bnsantos.tilingexample;
+package com.bnsantos.tilingexample.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.bnsantos.tilingexample.App;
+import com.bnsantos.tilingexample.R;
 import com.qozix.tileview.graphics.BitmapDecoder;
 import com.squareup.picasso.Picasso;
 

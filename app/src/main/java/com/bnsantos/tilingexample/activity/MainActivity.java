@@ -70,7 +70,6 @@ public class MainActivity extends ActionBarActivity implements PagePickerListene
 
     private void startTileActivity(){
         TileActivity.start(this, mFileId, mPage);
-        finish();
     }
 
     @Override

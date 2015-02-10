@@ -1,12 +1,12 @@
-package com.bnsantos.tilingexample;
+package com.bnsantos.tilingexample.utils;
 
 import android.graphics.Point;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
+import com.bnsantos.tilingexample.R;
 import com.qozix.tileview.TileView;
 
 /**
@@ -21,9 +21,15 @@ public class MyDragListener implements View.OnDragListener {
 
     private Point mStart;
     private Point mFinal;
+    private final int mWidth;
+    private final int mHeight;
+    private final int mToolbarH;
 
-    public MyDragListener(TileView mTileView) {
+    public MyDragListener(TileView mTileView, int width, int height, int toolbarHeight) {
         this.mTileView = mTileView;
+        mWidth = width;
+        mHeight = height;
+        mToolbarH = toolbarHeight;
     }
 
     @Override
@@ -43,42 +49,17 @@ public class MyDragListener implements View.OnDragListener {
                 v.setBackgroundResource(normalShape);
                 break;
             case DragEvent.ACTION_DROP:
-                //TODO count size of borders
                 Log.i(TAG, "ACTION_DROP");
                 // Dropped, reassign View to ViewGroup
                 View view = (View) event.getLocalState();
                 ViewGroup owner = (ViewGroup) view.getParent();
                 owner.removeView(view);
                 TileView container = (TileView) v;
+
                 mFinal = new Point((int)event.getX(), (int)event.getY());
-                double scale = container.getScale();
-
-                double dx = (mFinal.x-mStart.x)/scale;
-                double dy = (mFinal.y-mStart.y)/scale;
-
-                String coordinates = (String) view.getTag();
-                String[] split = coordinates.split(":");
-
-                double x = Double.parseDouble(split[0])+dx;
-                if(x<0){
-                    x=0;
-                }
-                if(x>5184){//TODO width of picture
-                    x=5184;
-                }
-                double y = Double.parseDouble(split[1])+dy;
-                if(y<0){
-                    y=0;
-                }
-                if(y>3456){//TODO height of picture
-                    y=3456;
-                }
-
-                mTileView.addMarker(view, x, y);
-                view.setTag(x+":"+y);
-
-                //container.addView(view);
-                //Add pin to tileView
+                double[] newPos = test(container.getScale(), (String) view.getTag());
+                mTileView.addMarker(view, newPos[0], newPos[1]);
+                view.setTag(newPos[0]+":"+newPos[1]);
                 view.setVisibility(View.VISIBLE);
 
                 mFinal=null;
@@ -94,4 +75,27 @@ public class MyDragListener implements View.OnDragListener {
     }
 
 
+    public double coordinateInBounds(double value, int max){
+        if(value<0){
+            return 0;
+        }
+        if(value>max){
+            return max;
+        }
+        return value;
+    }
+
+    public double[] test(double scale, String coordinates){
+        double dx = (mFinal.x-mStart.x)/scale;
+        double dy = (mFinal.y-mStart.y)/scale;
+
+        String[] split = coordinates.split(":");
+
+        double x = Double.parseDouble(split[0])+dx;
+        x = coordinateInBounds(x, mWidth);
+        double y = Double.parseDouble(split[1])+dy+mToolbarH;
+        y = coordinateInBounds(y, mHeight);
+
+        return new double[]{x, y};
+    }
 }

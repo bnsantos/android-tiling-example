@@ -1,4 +1,4 @@
-package com.bnsantos.tilingexample;
+package com.bnsantos.tilingexample.utils;
 
 import android.content.ClipData;
 import android.view.View;

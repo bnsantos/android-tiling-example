@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnsantos.tilingexample.App;
@@ -39,33 +41,22 @@ public class TileActivity extends ActionBarActivity {
     private int mPage;
     private Button mAddPin;
     private Button mRemovePin;
+    private TextView mTtitle;
     private ProgressBar mProgressBar;
     private WeakReference<TileFragment> mTileFragment;
+    private int mPictureWidth;
+    private int mPictureHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tile);
-        setTheme(R.style.FullscreenTheme);
+        initToolbar();
 
         extractData(getIntent());
         retrievePictureInfo();
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mAddPin = (Button) findViewById(R.id.addPinButton);
-        mAddPin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addPin();
-            }
-        });
-        mRemovePin = (Button) findViewById(R.id.removePinButton);
-        mRemovePin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removePin();
-            }
-        });
     }
 
     private void extractData(Intent intent){
@@ -77,6 +68,34 @@ public class TileActivity extends ActionBarActivity {
             mPage = intent.getIntExtra(INTENT_EXTRA_PAGE, 0);
             mPdf = intent.getStringExtra(INTENT_EXTRA_PDF);
         }
+    }
+
+    private void initToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_action_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        mAddPin = (Button) toolbar.findViewById(R.id.addPinButton);
+        mAddPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPin();
+            }
+        });
+        mRemovePin = (Button) toolbar.findViewById(R.id.removePinButton);
+        mRemovePin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removePin();
+            }
+        });
+        mTtitle = (TextView) toolbar.findViewById(R.id.toolbarTitle);
     }
 
     private void retrievePictureInfo(){
@@ -98,12 +117,16 @@ public class TileActivity extends ActionBarActivity {
     }
 
     private void initFragment(int width, int height){
+        mPictureWidth = width;
+        mPictureHeight = height;
         mTileFragment = new WeakReference<>(TileFragment.newInstance(mPdf, mPage, width, height));
+        mTtitle.setText(mPdf + " - " + mPage);
         getFragmentManager()
                 .beginTransaction()
                 .add(R.id.tileFrame, mTileFragment.get(), "TILE_FRAGMENT")
                 .commit();
         mProgressBar.setVisibility(View.GONE);
+        findViewById(R.id.tileFrame).setVisibility(View.VISIBLE);
         mAddPin.setVisibility(View.VISIBLE);
         mRemovePin.setVisibility(View.VISIBLE);
     }
@@ -114,5 +137,13 @@ public class TileActivity extends ActionBarActivity {
 
     private void removePin(){
         mTileFragment.get().removePin();
+    }
+
+    public int getPictureWidth() {
+        return mPictureWidth;
+    }
+
+    public int getPictureHeight() {
+        return mPictureHeight;
     }
 }
