@@ -2,13 +2,18 @@ package com.bnsantos.tilingexample.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bnsantos.tilingexample.App;
 import com.bnsantos.tilingexample.MyBitmapDecoder;
+import com.bnsantos.tilingexample.R;
 import com.qozix.tileview.TileView;
+import com.qozix.tileview.graphics.BitmapDecoderHttp;
 import com.qozix.tileview.markers.MarkerEventListener;
 
 /**
@@ -21,6 +26,7 @@ public class TileFragment extends Fragment{
     private int mPage;
     private int mWidth;
     private int mHeight;
+    private boolean mAddPin;
 
     public static TileFragment newInstance(String pdf, int page, int width, int height){
         TileFragment tileFragment = new TileFragment();
@@ -42,27 +48,120 @@ public class TileFragment extends Fragment{
         mTileView.setSize(mWidth, mHeight);
 
         mTileView.setDecoder(new MyBitmapDecoder(mPdf, mPage));
-        mTileView.addDetailLevel(1.000f, "100:%col%:%row%");
-        mTileView.addDetailLevel(0.500f, "50:%col%:%row%");
-        mTileView.addDetailLevel(0.250f, "25:%col%:%row%");
         mTileView.addDetailLevel(0.125f, "12.5:%col%:%row%");
+        mTileView.addDetailLevel(0.250f, "25:%col%:%row%");
+        mTileView.addDetailLevel(0.500f, "50:%col%:%row%");
+        mTileView.addDetailLevel(1.000f, "100:%col%:%row%");
+        mTileView.setTransitionDuration(50);
 
         /*mTileView.setDecoder(new BitmapDecoderHttp());
         String endpoint = App.END_POINT + "/files/";
         mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=12.5&col=%col%&row=%row%");
-        mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=25&col=%col%&row=%row%");
-        mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=50&col=%col%&row=%row%");
-        mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=100&col=%col%&row=%row%");
-        mTileView.setCacheEnabled(true);
-        */
+        mTileView.addDetailLevel(0.250f, endpoint + mPdf + "/" + mPage + "?zoom=25&col=%col%&row=%row%");
+        mTileView.addDetailLevel(0.500f, endpoint + mPdf + "/" + mPage + "?zoom=50&col=%col%&row=%row%");
+        mTileView.addDetailLevel(1.000f, endpoint + mPdf + "/" + mPage + "?zoom=100&col=%col%&row=%row%");
+        mTileView.setCacheEnabled(false);*/
+
+        // center markers along both axes
+        mTileView.setMarkerAnchorPoints( -0.5f, -0.5f );
 
         mTileView.addMarkerEventListener(new MarkerEventListener() {
             @Override
             public void onMarkerTap(View view, int x, int y) {
-                Toast.makeText(getActivity(), "You tapped a pin", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "You tapped a pin ["+x+","+y+"]", Toast.LENGTH_LONG).show();
             }
         });
 
+        mTileView.addTileViewEventListener(new TileView.TileViewEventListener() {
+            @Override
+            public void onFingerDown(int i, int i2) {
+                Log.i(TAG, "Finger down ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onFingerUp(int i, int i2) {
+                Log.i(TAG, "Finger up ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onDrag(int i, int i2) {
+                Log.i(TAG, "Drag ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onDoubleTap(int i, int i2) {
+                Log.i(TAG, "Double tap ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onTap(int i, int i2) {
+                if(mAddPin){
+                    addPin(i, i2);
+                }
+                Log.i(TAG, "Tap ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onPinch(int i, int i2) {
+                Log.i(TAG, "Pinch ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onPinchStart(int i, int i2) {
+                Log.i(TAG, "Pinch start ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onPinchComplete(int i, int i2) {
+                Log.i(TAG, "Pinch complete ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onFling(int i, int i2, int i3, int i4) {
+                Log.i(TAG, "Fling ["+i+","+i2+"]");
+            }
+
+            @Override
+            public void onFlingComplete(int i, int i2) {
+                Log.i(TAG, "Fling complete ["+i+","+i2+"]");
+
+            }
+
+            @Override
+            public void onScaleChanged(double v) {
+            }
+
+            @Override
+            public void onScrollChanged(int i, int i2) {
+                Log.i(TAG, "Scroll changed ["+i+","+i2+"]");
+
+            }
+
+            @Override
+            public void onZoomStart(double v) {
+
+            }
+
+            @Override
+            public void onZoomComplete(double v) {
+
+            }
+
+            @Override
+            public void onDetailLevelChanged() {
+
+            }
+
+            @Override
+            public void onRenderStart() {
+
+            }
+
+            @Override
+            public void onRenderComplete() {
+
+            }
+        });
     }
 
     @Override
@@ -86,5 +185,17 @@ public class TileFragment extends Fragment{
         if(mTileView!=null){
             mTileView.resume();
         }
+    }
+
+    public void addPin(){
+        Toast.makeText(getActivity(), R.string.click_add_pin, Toast.LENGTH_SHORT).show();
+        mAddPin = true;
+    }
+
+    private void addPin( double x, double y ) {
+        ImageView imageView = new ImageView(getActivity());
+        imageView.setImageResource(R.drawable.push_pin);
+        mTileView.addMarker(imageView, x, y);
+        mAddPin = false;
     }
 }

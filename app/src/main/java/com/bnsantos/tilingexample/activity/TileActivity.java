@@ -99,20 +99,6 @@ public class TileActivity extends ActionBarActivity {
     }
 
     private void addPin(){
-        //Center coordinate of the tile view
-        /*int width = mTileView.getWidth()/2;
-        int height = mTileView.getHeight()/2;
-        //Add displacement
-        addPin(width, height);
-
-
-        //Center of the picture
-        addPin(1500, 1159);*/
-    }
-
-    private void addPin( double x, double y ) {
-        ImageView imageView = new ImageView( this );
-        imageView.setImageResource( R.drawable.push_pin );
-        //mTileView.addMarker(imageView, x, y);
+        mTileFragment.get().addPin();
     }
 }
