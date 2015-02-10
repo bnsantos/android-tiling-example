@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bnsantos.tilingexample.App;
 import com.bnsantos.tilingexample.MyBitmapDecoder;
 import com.bnsantos.tilingexample.R;
 import com.qozix.tileview.TileView;
-import com.qozix.tileview.graphics.BitmapDecoderHttp;
 import com.qozix.tileview.markers.MarkerEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by bruno on 29/01/15.
@@ -27,6 +28,7 @@ public class TileFragment extends Fragment{
     private int mWidth;
     private int mHeight;
     private boolean mAddPin;
+    private boolean mRemovePin;
 
     public static TileFragment newInstance(String pdf, int page, int width, int height){
         TileFragment tileFragment = new TileFragment();
@@ -52,7 +54,7 @@ public class TileFragment extends Fragment{
         mTileView.addDetailLevel(0.250f, "25:%col%:%row%");
         mTileView.addDetailLevel(0.500f, "50:%col%:%row%");
         mTileView.addDetailLevel(1.000f, "100:%col%:%row%");
-        mTileView.setTransitionDuration(50);
+        mTileView.setScale(0.125f);
 
         /*mTileView.setDecoder(new BitmapDecoderHttp());
         String endpoint = App.END_POINT + "/files/";
@@ -69,6 +71,9 @@ public class TileFragment extends Fragment{
             @Override
             public void onMarkerTap(View view, int x, int y) {
                 Toast.makeText(getActivity(), "You tapped a pin ["+x+","+y+"]", Toast.LENGTH_LONG).show();
+                if(mRemovePin){
+                    mTileView.removeMarker(view);
+                }
             }
         });
 
@@ -94,11 +99,11 @@ public class TileFragment extends Fragment{
             }
 
             @Override
-            public void onTap(int i, int i2) {
+            public void onTap(int w, int h) {
                 if(mAddPin){
-                    addPin(i, i2);
+                    addPin(w/mTileView.getScale(), h/mTileView.getScale());
                 }
-                Log.i(TAG, "Tap ["+i+","+i2+"]");
+                Log.i(TAG, "Tap ["+w+","+h+"]");
             }
 
             @Override
@@ -192,8 +197,15 @@ public class TileFragment extends Fragment{
         mAddPin = true;
     }
 
+    public void removePin(){
+        Toast.makeText(getActivity(), R.string.click_remove_pin, Toast.LENGTH_SHORT).show();
+        mRemovePin = true;
+    }
+
     private void addPin( double x, double y ) {
         ImageView imageView = new ImageView(getActivity());
+        String key = "pin_"+x+"_"+y;
+        imageView.setTag(key);
         imageView.setImageResource(R.drawable.push_pin);
         mTileView.addMarker(imageView, x, y);
         mAddPin = false;

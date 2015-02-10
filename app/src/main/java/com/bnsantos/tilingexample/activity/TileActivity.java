@@ -38,6 +38,7 @@ public class TileActivity extends ActionBarActivity {
     private String mPdf;
     private int mPage;
     private Button mAddPin;
+    private Button mRemovePin;
     private ProgressBar mProgressBar;
     private WeakReference<TileFragment> mTileFragment;
 
@@ -55,6 +56,13 @@ public class TileActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 addPin();
+            }
+        });
+        mRemovePin = (Button) findViewById(R.id.removePinButton);
+        mRemovePin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removePin();
             }
         });
     }
@@ -96,9 +104,14 @@ public class TileActivity extends ActionBarActivity {
                 .commit();
         mProgressBar.setVisibility(View.GONE);
         mAddPin.setVisibility(View.VISIBLE);
+        mRemovePin.setVisibility(View.VISIBLE);
     }
 
     private void addPin(){
         mTileFragment.get().addPin();
+    }
+
+    private void removePin(){
+        mTileFragment.get().removePin();
     }
 }

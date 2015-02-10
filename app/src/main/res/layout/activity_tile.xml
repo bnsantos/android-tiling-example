@@ -18,8 +18,7 @@
         android:id="@+id/tileFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_blue_bright"
-        ></FrameLayout>
+        android:background="@android:color/holo_blue_bright"></FrameLayout>
 
     <Button
         android:id="@+id/addPinButton"
@@ -29,6 +28,17 @@
         android:layout_alignParentRight="true"
         android:scaleType="centerInside"
         android:background="@drawable/add"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
+
+    <Button
+        android:id="@+id/removePinButton"
+        android:layout_width="@dimen/add_btn_size"
+        android:layout_height="@dimen/add_btn_size"
+        android:scaleType="centerInside"
+        android:background="@drawable/remove"
+        android:visibility="visible"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/addPinButton"
+        android:layout_toStartOf="@+id/addPinButton" />
 
 </RelativeLayout>
