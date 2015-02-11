@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.bnsantos.tilingexample.R;
 import com.bnsantos.tilingexample.activity.TileActivity;
-import com.bnsantos.tilingexample.utils.MyBitmapDecoder;
+import com.bnsantos.tilingexample.utils.PicassoBitmapDecoder;
 import com.bnsantos.tilingexample.utils.MyDragListener;
 import com.bnsantos.tilingexample.utils.MyOnLongClickListener;
 import com.qozix.tileview.TileView;
@@ -50,20 +50,22 @@ public class TileFragment extends Fragment{
         mTileView = new TileView(getActivity());
         mTileView.setSize(mWidth, mHeight);
 
-        mTileView.setDecoder(new MyBitmapDecoder(mPdf, mPage));
+        //Using Picasso
+        mTileView.setDecoder(new PicassoBitmapDecoder(mPdf, mPage));
         mTileView.addDetailLevel(0.125f, "12.5:%col%:%row%");
         mTileView.addDetailLevel(0.250f, "25:%col%:%row%");
         mTileView.addDetailLevel(0.500f, "50:%col%:%row%");
         mTileView.addDetailLevel(1.000f, "100:%col%:%row%");
         mTileView.setScale(0.125f);
 
+        //Using HttpURLConnection
         /*mTileView.setDecoder(new BitmapDecoderHttp());
         String endpoint = App.END_POINT + "/files/";
         mTileView.addDetailLevel(0.125f, endpoint + mPdf + "/" + mPage + "?zoom=12.5&col=%col%&row=%row%");
         mTileView.addDetailLevel(0.250f, endpoint + mPdf + "/" + mPage + "?zoom=25&col=%col%&row=%row%");
         mTileView.addDetailLevel(0.500f, endpoint + mPdf + "/" + mPage + "?zoom=50&col=%col%&row=%row%");
         mTileView.addDetailLevel(1.000f, endpoint + mPdf + "/" + mPage + "?zoom=100&col=%col%&row=%row%");
-        mTileView.setCacheEnabled(false);*/
+        */
 
         // center markers along both axes
         mTileView.setMarkerAnchorPoints( -0.5f, -0.5f );
@@ -195,6 +197,9 @@ public class TileFragment extends Fragment{
 
     private void addPin( double x, double y ) {
         ImageView imageView = new ImageView(getActivity());
+        int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.pin_size);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(dimensionPixelSize, dimensionPixelSize);
+        imageView.setLayoutParams(layoutParams);
         String key = x+":"+y;
         imageView.setTag(key);
         imageView.setImageResource(R.drawable.push_pin);

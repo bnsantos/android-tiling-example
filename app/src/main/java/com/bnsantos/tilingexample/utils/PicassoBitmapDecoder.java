@@ -15,12 +15,12 @@ import java.io.IOException;
 /**
  * Created by bruno on 29/01/15.
  */
-public class MyBitmapDecoder implements BitmapDecoder {
-    private static final String TAG = MyBitmapDecoder.class.getSimpleName();
+public class PicassoBitmapDecoder implements BitmapDecoder {
+    private static final String TAG = PicassoBitmapDecoder.class.getSimpleName();
     private final String mPdf;
     private final int mPage;
 
-    public MyBitmapDecoder(String pdf, int page) {
+    public PicassoBitmapDecoder(String pdf, int page) {
         this.mPdf = pdf;
         this.mPage = page;
     }
