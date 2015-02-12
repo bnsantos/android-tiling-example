@@ -87,13 +87,13 @@ public class MyDragListener implements View.OnDragListener {
 
     public double[] coordinatesAfterDragging(double scale, String coordinates){
         double dx = (mFinal[0]-mStart[0])/scale;
-        double dy = (mFinal[1]-mStart[1])/scale;
+        double dy = (mFinal[1]-mStart[1]+mToolbarH)/scale;
 
         String[] split = coordinates.split(":");
 
         double x = Double.parseDouble(split[0])+dx;
         x = coordinateInBounds(x, mWidth);
-        double y = Double.parseDouble(split[1])+dy+mToolbarH;
+        double y = Double.parseDouble(split[1])+dy;
         y = coordinateInBounds(y, mHeight);
 
         return new double[]{x, y};
