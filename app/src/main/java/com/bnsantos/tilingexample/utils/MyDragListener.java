@@ -19,8 +19,8 @@ public class MyDragListener implements View.OnDragListener {
     private int enterShape = R.drawable.shape_droptarget;
     private int normalShape = R.drawable.shape;
 
-    private Point mStart;
-    private Point mFinal;
+    private double[] mStart;
+    private double[] mFinal;
     private final int mWidth;
     private final int mHeight;
     private final int mToolbarH;
@@ -36,7 +36,7 @@ public class MyDragListener implements View.OnDragListener {
     public boolean onDrag(View v, DragEvent event) {
         switch (event.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                mStart = new Point((int)event.getX(), (int)event.getY());
+                mStart = new double[]{event.getX(), event.getY()};
                 Log.i(TAG, "ACTION_DRAG_STARTED");
                 // do nothing
                 break;
@@ -56,8 +56,8 @@ public class MyDragListener implements View.OnDragListener {
                 owner.removeView(view);
                 TileView container = (TileView) v;
 
-                mFinal = new Point((int)event.getX(), (int)event.getY());
-                double[] newPos = test(container.getScale(), (String) view.getTag());
+                mFinal = new double[]{event.getX(), event.getY()};
+                double[] newPos = coordinatesAfterDragging(container.getScale(), (String) view.getTag());
                 mTileView.addMarker(view, newPos[0], newPos[1]);
                 view.setTag(newPos[0]+":"+newPos[1]);
                 view.setVisibility(View.VISIBLE);
@@ -85,9 +85,9 @@ public class MyDragListener implements View.OnDragListener {
         return value;
     }
 
-    public double[] test(double scale, String coordinates){
-        double dx = (mFinal.x-mStart.x)/scale;
-        double dy = (mFinal.y-mStart.y)/scale;
+    public double[] coordinatesAfterDragging(double scale, String coordinates){
+        double dx = (mFinal[0]-mStart[0])/scale;
+        double dy = (mFinal[1]-mStart[1])/scale;
 
         String[] split = coordinates.split(":");
 
