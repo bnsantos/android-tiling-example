@@ -1,6 +1,7 @@
 package com.bnsantos.tilingexample.service;
 
 import com.bnsantos.tilingexample.model.FilePageCount;
+import com.bnsantos.tilingexample.model.PdfInfo;
 import com.bnsantos.tilingexample.model.PictureInfo;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import rx.Observable;
  */
 public interface TileService {
     @GET("/files")
-    public Observable<List<String>> retrieveFiles();
+    public Observable<List<PdfInfo>> retrieveFiles();
 
     @GET("/files/{id}/{page}")
     public Response retrieveTile(@Path("id") String id,

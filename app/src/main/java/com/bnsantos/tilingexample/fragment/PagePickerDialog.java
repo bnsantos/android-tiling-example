@@ -26,15 +26,17 @@ import rx.schedulers.Schedulers;
 public class PagePickerDialog extends DialogFragment {
     private static final String TAG = PagePickerDialog.class.getName();
     private String mFileId;
+    private int mPages;
     private View mView;
     private NumberPicker mPicker;
     private LinearLayout mContent;
     private LinearLayout mLoading;
     private PagePickerListener mListener;
 
-    public static PagePickerDialog newInstance(String fileId) {
+    public static PagePickerDialog newInstance(String fileId, int pages) {
         PagePickerDialog dialogFragment = new PagePickerDialog();
         dialogFragment.mFileId = fileId;
+        dialogFragment.mPages = pages;
         return dialogFragment;
     }
 
@@ -67,23 +69,9 @@ public class PagePickerDialog extends DialogFragment {
             }
         });
 
-        App.getService().retrievePdfPages(mFileId)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<FilePageCount>() {
-                    @Override
-                    public void call(FilePageCount filePageCount) {
-                        mPicker.setMaxValue(filePageCount.numPages);
-                        mLoading.setVisibility(View.GONE);
-                        mContent.setVisibility(View.VISIBLE);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.e(TAG, "Error retrieving file["+mFileId+"] page count", throwable);
-                        Toast.makeText(getActivity(), R.string.error_files, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        mPicker.setMaxValue(mPages);
+        mLoading.setVisibility(View.GONE);
+        mContent.setVisibility(View.VISIBLE);
     }
 
     private void pageSelected(){

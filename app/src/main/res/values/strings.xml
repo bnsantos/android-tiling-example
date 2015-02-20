@@ -26,4 +26,7 @@
 
     <string name="click_add_pin">Click where you want to add pin</string>
     <string name="click_remove_pin">Click pin to remove</string>
+    <string name="file_name">File: </string>
+    <string name="file_pages">Pages: </string>
+    <string name="time_render">Time Render(s): </string>
 </resources>

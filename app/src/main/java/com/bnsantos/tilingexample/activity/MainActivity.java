@@ -6,15 +6,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnsantos.tilingexample.App;
+import com.bnsantos.tilingexample.adapter.PDFInfoAdapter;
 import com.bnsantos.tilingexample.fragment.PagePickerDialog;
 import com.bnsantos.tilingexample.R;
+import com.bnsantos.tilingexample.model.PdfInfo;
 
 import java.util.List;
 
@@ -25,9 +24,10 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends ActionBarActivity implements PagePickerListener{
     private static final String TAG = MainActivity.class.getSimpleName();
     private ListView mFiles;
-    private ArrayAdapter<String> mAdapter;
+    private PDFInfoAdapter mAdapter;
 
-    private String mFileId;
+    private PdfInfo mInfo;
+    private String mFileName;
     private int mPage;
 
     @Override
@@ -51,8 +51,9 @@ public class MainActivity extends ActionBarActivity implements PagePickerListene
         mFiles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mFileId = mAdapter.getItem(position);
-                PagePickerDialog pagePickerDialog = PagePickerDialog.newInstance(mFileId);
+                mInfo = mAdapter.getItem(position);
+                mFileName = mInfo.getFilename().replace(".pdf", "");
+                PagePickerDialog pagePickerDialog = PagePickerDialog.newInstance(mFileName, mInfo.getPages());
                 pagePickerDialog.setListener(MainActivity.this);
                 pagePickerDialog.show(getSupportFragmentManager(), "PAGE_PICKER");
             }
@@ -63,10 +64,10 @@ public class MainActivity extends ActionBarActivity implements PagePickerListene
         App.getService().retrieveFiles()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<String>>() {
+                .subscribe(new Action1<List<PdfInfo>>() {
                     @Override
-                    public void call(List<String> files) {
-                        mAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, files);
+                    public void call(List<PdfInfo> files) {
+                        mAdapter = new PDFInfoAdapter(MainActivity.this, R.layout.adapter_pdf_info, files);
                         mFiles.setAdapter(mAdapter);
                     }
                 }, new Action1<Throwable>() {
@@ -79,7 +80,7 @@ public class MainActivity extends ActionBarActivity implements PagePickerListene
     }
 
     private void startTileActivity(){
-        TileActivity.start(this, mFileId, mPage);
+        TileActivity.start(this, mInfo.getId(), mFileName, mPage);
     }
 
     @Override

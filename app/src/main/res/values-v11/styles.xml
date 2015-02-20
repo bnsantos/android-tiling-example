@@ -1,13 +1,13 @@
 <resources>
 
-    <style name="FullscreenTheme" parent="android:Theme.Holo">
-        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
+    <style filename="FullscreenTheme" parent="android:Theme.Holo">
+        <item filename="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item filename="android:windowActionBarOverlay">true</item>
+        <item filename="android:windowBackground">@null</item>
     </style>
 
-    <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
-        <item name="android:background">@color/black_overlay</item>
+    <style filename="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
+        <item filename="android:background">@color/black_overlay</item>
     </style>
 
 </resources>

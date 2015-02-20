@@ -27,16 +27,19 @@ import rx.schedulers.Schedulers;
 
 public class TileActivity extends ActionBarActivity {
     private static final String TAG = TileActivity.class.getSimpleName();
+    private static final String INTENT_EXTRA_FILE_ID = "INTENT_EXTRA_ID";
     private static final String INTENT_EXTRA_PDF = "INTENT_EXTRA_PDF";
     private static final String INTENT_EXTRA_PAGE = "INTENT_EXTRA_PAGE";
 
-    public static void start(Activity activity, String pdf, int page){
+    public static void start(Activity activity, String id, String pdf, int page){
         Intent intent = new Intent(activity, TileActivity.class);
+        intent.putExtra(INTENT_EXTRA_FILE_ID, id);
         intent.putExtra(INTENT_EXTRA_PDF, pdf);
         intent.putExtra(INTENT_EXTRA_PAGE, page);
         activity.startActivity(intent);
     }
 
+    private String mId;
     private String mPdf;
     private int mPage;
     private Button mAddPin;
@@ -67,6 +70,7 @@ public class TileActivity extends ActionBarActivity {
             }
             mPage = intent.getIntExtra(INTENT_EXTRA_PAGE, 0);
             mPdf = intent.getStringExtra(INTENT_EXTRA_PDF);
+            mId = intent.getStringExtra(INTENT_EXTRA_FILE_ID);
         }
     }
 
@@ -99,7 +103,7 @@ public class TileActivity extends ActionBarActivity {
     }
 
     private void retrievePictureInfo(){
-        App.getService().retrievePictureInfo(mPdf, mPage)
+        App.getService().retrievePictureInfo(mId, mPage)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<PictureInfo>() {
@@ -119,7 +123,7 @@ public class TileActivity extends ActionBarActivity {
     private void initFragment(int width, int height){
         mPictureWidth = width;
         mPictureHeight = height;
-        mTileFragment = new WeakReference<>(TileFragment.newInstance(mPdf, mPage, width, height));
+        mTileFragment = new WeakReference<>(TileFragment.newInstance(mId, mPage, width, height));
         mTtitle.setText(mPdf + " - " + mPage);
         getFragmentManager()
                 .beginTransaction()
