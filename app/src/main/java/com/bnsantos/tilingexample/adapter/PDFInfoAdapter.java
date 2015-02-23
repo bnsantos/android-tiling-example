@@ -33,7 +33,11 @@ public class PDFInfoAdapter extends ArrayAdapter<PdfInfo> {
 
         viewHolder.fileName.setText(info.getFilename());
         viewHolder.pages.setText(Integer.toString(info.getPages()));
-        viewHolder.timeRender.setText(Long.toString(TimeUnit.MILLISECONDS.toSeconds(info.getCompletedAt().getTime()-info.getCreatedAt().getTime())));
+        if(info.getCompletedAt()!=null){
+            viewHolder.timeRender.setText(Long.toString(TimeUnit.MILLISECONDS.toSeconds(info.getCompletedAt().getTime()-info.getCreatedAt().getTime())));
+        }else{
+            viewHolder.timeRender.setText(R.string.still_processing);
+        }
         return convertView;
     }
 

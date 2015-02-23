@@ -31,7 +31,7 @@ public static final String END_POINT = "SERVER_LOCATION_HERE";
 You can add/remove pins into the picture, also drag and drop them
 
 ### Screens
-<img src="screens/Screenshot_2015-02-11-14-46-51.png" width="180px" height="360px">
+<img src="screens/Screenshot_2015-02-23-15-14-29.png" width="180px" height="360px">
 <img src="screens/Screenshot_2015-02-11-14-47-02.png" width="180px" height="360px">
 <img src="screens/Screenshot_2015-02-11-14-54-36.png" width="180px" height="360px">
 

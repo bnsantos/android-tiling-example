@@ -29,4 +29,6 @@
     <string name="file_name">File: </string>
     <string name="file_pages">Pages: </string>
     <string name="time_render">Time Render(s): </string>
+    <string name="still_processing">Still processing</string>
+    <string name="still_processing_toast">The selected file is still being processed, try again later</string>
 </resources>

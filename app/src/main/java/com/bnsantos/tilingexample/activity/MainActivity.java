@@ -52,10 +52,14 @@ public class MainActivity extends ActionBarActivity implements PagePickerListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mInfo = mAdapter.getItem(position);
-                mFileName = mInfo.getFilename().replace(".pdf", "");
-                PagePickerDialog pagePickerDialog = PagePickerDialog.newInstance(mFileName, mInfo.getPages());
-                pagePickerDialog.setListener(MainActivity.this);
-                pagePickerDialog.show(getSupportFragmentManager(), "PAGE_PICKER");
+                if(mInfo.getCompletedAt()!=null){
+                    mFileName = mInfo.getFilename().replace(".pdf", "");
+                    PagePickerDialog pagePickerDialog = PagePickerDialog.newInstance(mFileName, mInfo.getPages());
+                    pagePickerDialog.setListener(MainActivity.this);
+                    pagePickerDialog.show(getSupportFragmentManager(), "PAGE_PICKER");
+                }else{
+                    Toast.makeText(MainActivity.this, R.string.still_processing_toast, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
