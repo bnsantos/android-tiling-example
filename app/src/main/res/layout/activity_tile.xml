@@ -58,6 +58,7 @@
         android:id="@+id/tileFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:longClickable="true"
         android:background="@android:color/darker_gray"
         android:visibility="gone">
 

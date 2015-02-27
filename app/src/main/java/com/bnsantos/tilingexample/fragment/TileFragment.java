@@ -2,10 +2,14 @@ package com.bnsantos.tilingexample.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -42,6 +46,9 @@ public class TileFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mLongPressTimeout = ViewConfiguration.get(getActivity()).getLongPressTimeout();
+        mVibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        mLongClickHandler = new Handler();
         initTileView();
         return mTileView;
     }
@@ -68,22 +75,27 @@ public class TileFragment extends Fragment{
         */
 
         // center markers along both axes
-        mTileView.setMarkerAnchorPoints( -0.5f, -0.5f );
+        mTileView.setMarkerAnchorPoints(-0.5f, -0.5f);
 
         mTileView.addTileViewEventListener(new TileView.TileViewEventListener() {
             @Override
             public void onFingerDown(int i, int i2) {
                 Log.i(TAG, "Finger down ["+i+","+i2+"]");
+                mLongClickRunnable.w = i;
+                mLongClickRunnable.h = i2;
+                mLongClickHandler.postDelayed(mLongClickRunnable, mLongPressTimeout);
             }
 
             @Override
             public void onFingerUp(int i, int i2) {
                 Log.i(TAG, "Finger up ["+i+","+i2+"]");
+                mLongClickHandler.removeCallbacks(mLongClickRunnable);
             }
 
             @Override
             public void onDrag(int i, int i2) {
                 Log.i(TAG, "Drag ["+i+","+i2+"]");
+                mLongClickHandler.removeCallbacks(mLongClickRunnable);
             }
 
             @Override
@@ -223,5 +235,21 @@ public class TileFragment extends Fragment{
     public void onAttach (Activity activity){
         super.onAttach(activity);
         mListener = (TileActivity) activity;
+    }
+
+    //Long click workaround
+    private Handler mLongClickHandler;
+    private AddPinLongClick mLongClickRunnable = new AddPinLongClick();
+    private static int mLongPressTimeout;
+    private Vibrator mVibrator;
+
+    private class AddPinLongClick implements Runnable{
+        public double w,h;
+        @Override
+        public void run() {
+            addPin(w / mTileView.getScale(), h / mTileView.getScale());
+            mVibrator.vibrate(10);
+            Log.i(TAG, "Loooong click");
+        }
     }
 }
